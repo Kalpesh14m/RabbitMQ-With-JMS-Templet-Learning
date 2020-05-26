@@ -1,0 +1,12 @@
+spring:
+  profiles: development
+  datasource:
+    url: jdbc:mysql://localhost:3306/${dbName}?useSSL=false
+    username: ${dbUser}
+    password: ${dbPass}
+  mail:
+    username: ${mailUser}
+    password: ${mailPass}
+  rabbitmq:
+    username: ${rabbitUser}
+    password: ${rabbitPass}
