@@ -14,7 +14,6 @@ public class RabbitMQReceiver {
 
 	@RabbitListener(queues = "${rmq.rube.queue}")
 	public void recievedMessage(Mail mail) {
-		System.out.println("Recieved Message From RabbitMQ: " + mail);
 		email.sendSimpleMessage(mail);
 	}
 }

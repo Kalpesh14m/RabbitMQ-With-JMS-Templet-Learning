@@ -1,20 +1,17 @@
 package com.bunny.service;
 
-import java.time.ZoneId;
-import java.util.Date;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bunny.model.Mail;
 import com.bunny.model.User;
 import com.bunny.model.dto.UserRegistrationDTO;
 import com.bunny.repo.custom.userRepository;
 import com.bunny.utils.DateUtil;
-import com.bunny.utils.EmailService;
-import com.bunny.utils.RabbitMQSender;
+import com.bunny.utils.MailTempletService;
 import com.bunny.utils.exception.BadRequestError;
 
 @Service
@@ -24,10 +21,7 @@ public class UserServiceProvider implements userService {
 	private userRepository userRepository;
 
 	@Autowired
-	private RabbitMQSender rabbitMQSender;
-
-	@Autowired
-	private Mail mail;
+	private MailTempletService mailTempletService;
 
 	@Override
 	public Optional<User> registerUser(UserRegistrationDTO request) {
@@ -36,13 +30,11 @@ public class UserServiceProvider implements userService {
 			throw new BadRequestError("User already registerd...!!!");
 		}
 		Optional<User> maybeUser = Optional.ofNullable(userRepository.save(new User(request)));
-		String msg = "Successfull Register: " + request.getFirstName();
-		mail.setTo(request.getEmail());
-		mail.setFrom(EmailService.SENDER_EMAIL_ID);
-		mail.setSentDate(Date.from(DateUtil.today().atZone(ZoneId.systemDefault()).toInstant()));
-		mail.setSubject("Registration Successfull..!!!");
-		mail.setContent(msg);
-		rabbitMQSender.send(mail);
+		try {
+			mailTempletService.getTemplate(request);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return maybeUser;
 	}
 

@@ -10,3 +10,11 @@ spring:
   rabbitmq:
     username: ${rabbitUser}
     password: ${rabbitPass}
+    
+rmq:
+  rube:
+    exchange: ${exchange}
+    queue: ${queue}
+    routingkey: ${routingkey}
+     
+
